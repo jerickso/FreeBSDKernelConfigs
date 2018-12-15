@@ -1,0 +1,6 @@
+# TODO: This file is currently a placeholder for an Amazon Web Service
+#  configuration.  Not tested and assumed not to work
+
+include 	BASE
+ident		AWS
+

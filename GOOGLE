@@ -1,0 +1,12 @@
+# TODO: This file is currently a placeholder for a Google Compute Engine
+#  configuration.  Not tested and assumed not to work currently
+
+include 	BASE
+ident		GOOGLE
+
+device		virtio		# Generic VirtIO bus (required)
+device		virtio_pci	# VirtIO PCI device
+device		vtnet		# VirtIO Ethernet device
+device		virtio_blk	# VirtIO Block device
+device		virtio_scsi	# VirtIO SCSI device
+device		virtio_balloon	# VirtIO Memory Balloon device

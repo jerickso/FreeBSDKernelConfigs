@@ -1,0 +1,13 @@
+
+include 	BASE
+ident		VMWARE
+
+device		mpt		# LSI-Logic MPT-Fusion
+# NOTE: em is added here because sometimes vms are setup for that
+device		em		# Intel PRO/1000 Gigabit Ethernet Family
+device		vmx		# VMware VMXNET3 Ethernet
+
+
+nodevice		kbdmux		# keyboard multiplexer
+nodevice		cpufreq
+nodevice		ukbd		# Keyboard

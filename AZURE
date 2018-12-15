@@ -1,0 +1,24 @@
+include 	BASE
+ident		AZURE
+
+device          hyperv		# HyperV drivers 
+device          uart        # Serial Port
+
+device          fdc
+
+device          cd
+nooptions       MSDOSFS
+
+nooptions       ATA_STATIC_ID
+nodevice        splash
+
+# Note that for provisioning in AZURE, the following is needed for the CD Drive.
+# In those cases we use a loadable module
+nodevice        ahci
+#nodevice       ata
+
+nodevice        vt
+nodevice        vt_vga
+nodevice        vt_efifb
+nodevice        ukbd
+nodevice        umass

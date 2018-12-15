@@ -1,0 +1,384 @@
+#
+# GENERIC -- Generic kernel configuration file for FreeBSD/amd64
+#
+# For more information on this file, please read the config(5) manual page,
+# and/or the handbook section on Kernel Configuration Files:
+#
+#    https://www.FreeBSD.org/doc/en_US.ISO8859-1/books/handbook/kernelconfig-config.html
+#
+# The handbook is also available locally in /usr/share/doc/handbook
+# if you've installed the doc distribution, otherwise always see the
+# FreeBSD World Wide Web server (https://www.FreeBSD.org/) for the
+# latest information.
+#
+# An exhaustive list of options and more detailed explanations of the
+# device lines is also present in the ../../conf/NOTES and NOTES files.
+# If you are in doubt as to the purpose or necessity of a line, check first
+# in NOTES.
+#
+# $FreeBSD: stable/12/sys/amd64/conf/GENERIC 340695 2018-11-20 19:37:09Z zeising $
+
+include 	GENERIC
+#cpu		HAMMER # Included in Generic
+ident		BASE
+
+options 	KDB_UNATTENDED
+
+
+# To statically compile in device wiring instead of /boot/device.hints
+#hints		"GENERIC.hints"		# Default places to look for devices.
+
+# Use the following to compile in values accessible to the kernel
+# through getenv() (or kenv(1) in userland). The format of the file
+# is 'variable=value', see kenv(1)
+#
+# env		"GENERIC.env"
+
+nomakeoptions	DEBUG   		# Build kernel with gdb(1) debug symbols
+nomakeoptions	WITH_CTF
+
+#options 	SCHED_ULE		# ULE scheduler
+#options 	NUMA			# Non-Uniform Memory Architecture support
+#options 	PREEMPTION		# Enable kernel thread preemption
+nooptions 	VIMAGE			# Subsystem virtualization, e.g. VNET
+#options 	INET			# InterNETworking
+#options 	INET6			# IPv6 communications protocols
+nooptions 	IPSEC			# IP (v4/v6) security
+nooptions 	IPSEC_SUPPORT		# Allow kldload of ipsec and tcpmd5
+#options 	TCP_OFFLOAD		# TCP offload
+nooptions 	TCP_BLACKBOX		# Enhanced TCP event logging
+nooptions 	TCP_HHOOK		# hhook(9) framework for TCP
+#options		TCP_RFC7413		# TCP Fast Open
+#options 	SCTP			# Stream Control Transmission Protocol
+#options 	FFS			# Berkeley Fast Filesystem
+#options 	SOFTUPDATES		# Enable FFS soft updates support
+nooptions 	UFS_ACL			# Support for access control lists
+#options 	UFS_DIRHASH		# Improve performance on big directories
+nooptions 	UFS_GJOURNAL		# Enable gjournal-based UFS journaling
+nooptions 	QUOTA			# Enable disk quotas for UFS
+nooptions 	MD_ROOT			# MD is a potential root device
+nooptions 	NFSCL			# Network Filesystem Client
+nooptions 	NFSD			# Network Filesystem Server
+nooptions 	NFSLOCKD		# Network Lock Manager
+nooptions 	NFS_ROOT		# NFS usable as /, requires NFSCL
+#options 	MSDOSFS			# MSDOS Filesystem
+#options 	CD9660			# ISO 9660 Filesystem
+#options 	PROCFS			# Process filesystem (requires PSEUDOFS)
+#options 	PSEUDOFS		# Pseudo-filesystem framework
+#options 	GEOM_RAID		# Soft RAID functionality.
+#options 	GEOM_LABEL		# Provides labelization
+nooptions 	EFIRT			# EFI Runtime Services support
+#options 	COMPAT_FREEBSD32	# Compatible with i386 binaries
+nooptions 	COMPAT_FREEBSD4		# Compatible with FreeBSD4
+nooptions 	COMPAT_FREEBSD5		# Compatible with FreeBSD5
+nooptions 	COMPAT_FREEBSD6		# Compatible with FreeBSD6
+nooptions 	COMPAT_FREEBSD7		# Compatible with FreeBSD7
+nooptions 	COMPAT_FREEBSD9		# Compatible with FreeBSD9
+nooptions 	COMPAT_FREEBSD10	# Compatible with FreeBSD10
+#nooptions 	COMPAT_FREEBSD11	# Compatible with FreeBSD11
+nooptions 	SCSI_DELAY     		# Delay (in ms) before probing SCSI
+#options 	KTRACE			# ktrace(1) support
+#options 	STACK			# stack(9) support
+#options 	SYSVSHM			# SYSV-style shared memory
+#options 	SYSVMSG			# SYSV-style message queues
+#options 	SYSVSEM			# SYSV-style semaphores
+#options 	_KPOSIX_PRIORITY_SCHEDULING # POSIX P1003_1B real-time extensions
+#options 	PRINTF_BUFR_SIZE=128	# Prevent printf output being interspersed.
+#options 	KBD_INSTALL_CDEV	# install a CDEV entry in /dev
+#options 	HWPMC_HOOKS		# Necessary kernel hooks for hwpmc(4)
+nooptions 	AUDIT			# Security event auditing
+nooptions 	CAPABILITY_MODE		# Capsicum capability mode
+nooptions 	CAPABILITIES		# Capsicum capabilities
+nooptions 	MAC			# TrustedBSD MAC Framework
+#options 	KDTRACE_FRAME		# Ensure frames are compiled in
+#options 	KDTRACE_HOOKS		# Kernel DTrace hooks
+#options 	DDB_CTF			# Kernel ELF linker loads CTF data
+#options 	INCLUDE_CONFIG_FILE     # Include this file in kernel
+nooptions 	RACCT			# Resource accounting framework
+nooptions 	RACCT_DEFAULT_TO_DISABLED # Set kern.racct.enable=0 by default
+nooptions 	RCTL			# Resource limits
+
+# Debugging support.  Always need this:
+nooptions 	KDB			# Enable kernel debugger support.
+nooptions 	KDB_TRACE		# Print a stack trace for a panic.
+
+# Kernel dump features.
+nooptions 	EKCD			# Support for encrypted kernel dumps
+options 	GZIO			# gzip-compressed kernel and user dumps
+options 	ZSTDIO			# zstd-compressed kernel and user dumps
+options 	NETDUMP			# netdump(4) client support
+
+# Make an SMP-capable kernel by default
+#options 	SMP			# Symmetric MultiProcessor Kernel
+#options 	EARLY_AP_STARTUP
+
+# CPU frequency control
+#device		cpufreq
+
+# Bus support.
+#device		acpi
+nooptions 	ACPI_DMAR
+#device		pci
+nooptions 	PCI_HP			# PCI-Express native HotPlug
+nooptions		PCI_IOV			# PCI SR-IOV support
+
+# Floppy drives
+nodevice		fdc
+
+# ATA controllers
+#device		ahci		# AHCI-compatible SATA controllers
+#device		ata		# Legacy ATA/SATA controllers
+nodevice		mvs		# Marvell 88SX50XX/88SX60XX/88SX70XX/SoC SATA
+nodevice		siis		# SiliconImage SiI3124/SiI3132/SiI3531 SATA
+
+# SCSI Controllers
+nodevice		ahc		# AHA2940 and onboard AIC7xxx devices
+nooptions 	AHC_REG_PRETTY_PRINT	# Print register bitfields in debug
+					# output.  Adds ~128k to driver.
+nodevice		ahd		# AHA39320/29320 and onboard AIC79xx devices
+nooptions 	AHD_REG_PRETTY_PRINT	# Print register bitfields in debug
+					# output.  Adds ~215k to driver.
+nodevice		esp		# AMD Am53C974 (Tekram DC-390(T))
+nodevice		hptiop		# Highpoint RocketRaid 3xxx series
+nodevice		isp		# Qlogic family
+nodevice		ispfw		# Firmware for QLogic HBAs- normally a module
+nodevice		mpt		# LSI-Logic MPT-Fusion
+nodevice		mps		# LSI-Logic MPT-Fusion 2
+nodevice		mpr		# LSI-Logic MPT-Fusion 3
+#device		ncr		# NCR/Symbios Logic
+nodevice		sym		# NCR/Symbios Logic (newer chipsets + those of `ncr')
+nodevice		trm		# Tekram DC395U/UW/F DC315U adapters
+nodevice		isci		# Intel C600 SAS controller
+nodevice		ocs_fc			# Emulex FC adapters
+
+# ATA/SCSI peripherals
+#device		scbus		# SCSI bus (required for ATA/SCSI)
+nodevice		ch		# SCSI media changers
+#device		da		# Direct Access (disks)
+nodevice		sa		# Sequential Access (tape etc)
+nodevice		cd		# CD
+#device		pass		# Passthrough device (direct ATA/SCSI access)
+nodevice		ses		# Enclosure Services (SES and SAF-TE)
+nodevice		ctl		# CAM Target Layer
+
+# RAID controllers interfaced to the SCSI subsystem
+nodevice		amr		# AMI MegaRAID
+nodevice		arcmsr		# Areca SATA II RAID
+nodevice		ciss		# Compaq Smart RAID 5*
+nodevice		dpt		# DPT Smartcache III, IV - See NOTES for options
+nodevice		hptmv		# Highpoint RocketRAID 182x
+nodevice		hptnr		# Highpoint DC7280, R750
+nodevice		hptrr		# Highpoint RocketRAID 17xx, 22xx, 23xx, 25xx
+nodevice		hpt27xx		# Highpoint RocketRAID 27xx
+nodevice		iir		# Intel Integrated RAID
+nodevice		ips		# IBM (Adaptec) ServeRAID
+nodevice		mly		# Mylex AcceleRAID/eXtremeRAID
+nodevice		twa		# 3ware 9000 series PATA/SATA RAID
+nodevice        smartpqi                # Microsemi smartpqi driver
+nodevice		tws		# LSI 3ware 9750 SATA+SAS 6Gb/s RAID controller
+
+# RAID controllers
+nodevice		aac		# Adaptec FSA RAID
+nodevice		aacp		# SCSI passthrough for aac (requires CAM)
+nodevice		aacraid		# Adaptec by PMC RAID
+nodevice		ida		# Compaq Smart RAID
+nodevice		mfi		# LSI MegaRAID SAS
+nodevice		mlx		# Mylex DAC960 family
+nodevice		mrsas		# LSI/Avago MegaRAID SAS/SATA, 6Gb/s and 12Gb/s
+nodevice		pmspcv			# PMC-Sierra SAS/SATA Controller driver
+#XXX pointer/int warnings
+#device		pst		# Promise Supertrak SX6000
+nodevice		twe		# 3ware ATA RAID
+
+# NVM Express (NVMe) support
+nodevice		nvme			# base NVMe driver
+nodevice		nvd			# expose NVMe namespaces as disks, depends on nvme
+
+# atkbdc0 controls both the keyboard and the PS/2 mouse
+#device		atkbdc		# AT keyboard controller
+#device		atkbd		# AT keyboard
+nodevice		psm		# PS/2 mouse
+
+#device		kbdmux		# keyboard multiplexer
+
+#device		vga		# VGA video card driver
+nooptions 	VESA		# Add support for VESA BIOS Extensions (VBE)
+
+#device		splash		# Splash screen and screen saver support
+
+# syscons is the default console driver, resembling an SCO console
+#device		sc
+nooptions 	SC_PIXEL_MODE	# add support for the raster text mode
+
+# vt is the new video console driver
+#device		vt
+#device		vt_vga
+nodevice		vt_efifb
+
+nodevice		agp		# support several AGP chipsets
+
+# PCCARD (PCMCIA) support
+# PCMCIA and cardbus bridge support
+nodevice		cbb		# cardbus (yenta) bridge
+nodevice		pccard		# PC Card (16-bit) bus
+nodevice		cardbus		# CardBus (32-bit) bus
+
+# Serial (COM) ports
+nodevice		uart		# Generic UART driver
+
+# Parallel port
+nodevice		ppc
+nodevice		ppbus		# Parallel port bus (required)
+nodevice		lpt		# Printer
+nodevice		ppi		# Parallel port interface device
+#device		vpo		# Requires scbus and da
+
+nodevice		puc		# Multi I/O cards and multi-channel UARTs
+
+# PCI Ethernet NICs.
+nodevice		bxe		# Broadcom NetXtreme II BCM5771X/BCM578XX 10GbE
+nodevice		de		# DEC/Intel DC21x4x (``Tulip'')
+nodevice		em		# Intel PRO/1000 Gigabit Ethernet Family
+nodevice		ix			# Intel PRO/10GbE PCIE PF Ethernet
+nodevice		ixv			# Intel PRO/10GbE PCIE VF Ethernet
+nodevice		ixl			# Intel 700 Series Physical Function
+nodevice		iavf			# Intel Adaptive Virtual Function
+nodevice		le		# AMD Am7900 LANCE and Am79C9xx PCnet
+nodevice		ti		# Alteon Networks Tigon I/II gigabit Ethernet
+nodevice		txp		# 3Com 3cR990 (``Typhoon'')
+nodevice		vx		# 3Com 3c590, 3c595 (``Vortex'')
+
+# PCI Ethernet NICs that use the common MII bus controller code.
+# NOTE: Be sure to keep the 'device miibus' line in order to use these NICs!
+nodevice		miibus		# MII bus support
+nodevice		ae		# Attansic/Atheros L2 FastEthernet
+nodevice		age		# Attansic/Atheros L1 Gigabit Ethernet
+nodevice		alc		# Atheros AR8131/AR8132 Ethernet
+nodevice		ale		# Atheros AR8121/AR8113/AR8114 Ethernet
+nodevice		bce		# Broadcom BCM5706/BCM5708 Gigabit Ethernet
+nodevice		bfe		# Broadcom BCM440x 10/100 Ethernet
+nodevice		bge		# Broadcom BCM570xx Gigabit Ethernet
+nodevice		cas		# Sun Cassini/Cassini+ and NS DP83065 Saturn
+nodevice		dc		# DEC/Intel 21143 and various workalikes
+nodevice		et		# Agere ET1310 10/100/Gigabit Ethernet
+nodevice		fxp		# Intel EtherExpress PRO/100B (82557, 82558)
+nodevice		gem		# Sun GEM/Sun ERI/Apple GMAC
+nodevice		hme		# Sun HME (Happy Meal Ethernet)
+nodevice		jme		# JMicron JMC250 Gigabit/JMC260 Fast Ethernet
+nodevice		lge		# Level 1 LXT1001 gigabit Ethernet
+nodevice		msk		# Marvell/SysKonnect Yukon II Gigabit Ethernet
+nodevice		nfe		# nVidia nForce MCP on-board Ethernet
+nodevice		nge		# NatSemi DP83820 gigabit Ethernet
+nodevice		pcn		# AMD Am79C97x PCI 10/100 (precedence over 'le')
+nodevice		re		# RealTek 8139C+/8169/8169S/8110S
+nodevice		rl		# RealTek 8129/8139
+nodevice		sf		# Adaptec AIC-6915 (``Starfire'')
+nodevice		sge		# Silicon Integrated Systems SiS190/191
+nodevice		sis		# Silicon Integrated Systems SiS 900/SiS 7016
+nodevice		sk		# SysKonnect SK-984x & SK-982x gigabit Ethernet
+nodevice		ste		# Sundance ST201 (D-Link DFE-550TX)
+nodevice		stge		# Sundance/Tamarack TC9021 gigabit Ethernet
+nodevice		tl		# Texas Instruments ThunderLAN
+nodevice		tx		# SMC EtherPower II (83c170 ``EPIC'')
+nodevice		vge		# VIA VT612x gigabit Ethernet
+nodevice		vr		# VIA Rhine, Rhine II
+nodevice		wb		# Winbond W89C840F
+nodevice		xl		# 3Com 3c90x (``Boomerang'', ``Cyclone'')
+
+# Wireless NIC cards
+nodevice		wlan		# 802.11 support
+nooptions 	IEEE80211_DEBUG	# enable debug msgs
+nooptions 	IEEE80211_AMPDU_AGE # age frames in AMPDU reorder q's
+nooptions 	IEEE80211_SUPPORT_MESH	# enable 802.11s draft support
+nodevice		wlan_wep	# 802.11 WEP support
+nodevice		wlan_ccmp	# 802.11 CCMP support
+nodevice		wlan_tkip	# 802.11 TKIP support
+nodevice		wlan_amrr	# AMRR transmit rate control algorithm
+nodevice		an		# Aironet 4500/4800 802.11 wireless NICs.
+nodevice		ath		# Atheros NICs
+nodevice		ath_pci		# Atheros pci/cardbus glue
+nodevice		ath_hal		# pci/cardbus chip support
+nooptions 	AH_SUPPORT_AR5416	# enable AR5416 tx/rx descriptors
+nooptions 	AH_AR5416_INTERRUPT_MITIGATION	# AR5416 interrupt mitigation
+nooptions 	ATH_ENABLE_11N	# Enable 802.11n support for AR5416 and later
+nodevice		ath_rate_sample	# SampleRate tx rate control for ath
+nodevice		bwi		# Broadcom BCM430x/BCM431x wireless NICs.
+nodevice		bwn		# Broadcom BCM43xx wireless NICs.
+nodevice		ipw		# Intel 2100 wireless NICs.
+nodevice		iwi		# Intel 2200BG/2225BG/2915ABG wireless NICs.
+nodevice		iwn		# Intel 4965/1000/5000/6000 wireless NICs.
+nodevice		malo		# Marvell Libertas wireless NICs.
+nodevice		mwl		# Marvell 88W8363 802.11n wireless NICs.
+nodevice		ral		# Ralink Technology RT2500 wireless NICs.
+nodevice		wi		# WaveLAN/Intersil/Symbol 802.11 wireless NICs.
+nodevice		wpi		# Intel 3945ABG wireless NICs.
+
+# Pseudo devices.
+device		crypto			# core crypto support
+#device		loop		# Network loopback
+#device		random		# Entropy device
+nodevice		padlock_rng	# VIA Padlock RNG
+nodevice		rdrand_rng	# Intel Bull Mountain RNG
+#device		ether		# Ethernet support
+nodevice		vlan		# 802.1Q VLAN support
+nodevice		tun		# Packet tunnel.
+nodevice		md		# Memory "disks"
+nodevice		gif		# IPv6 and IPv4 tunneling
+#device		firmware	# firmware assist module
+
+# The `bpf' device enables the Berkeley Packet Filter.
+# Be aware of the administrative consequences of enabling this!
+# Note that 'bpf' is required for DHCP.
+#device		bpf		# Berkeley packet filter
+
+# USB support
+nooptions 	USB_DEBUG	# enable debug msgs
+#device		uhci		# UHCI PCI->USB interface
+nodevice		ohci		# OHCI PCI->USB interface
+#device		ehci		# EHCI PCI->USB interface (USB 2.0)
+nodevice		xhci		# XHCI PCI->USB interface (USB 3.0)
+#device		usb		# USB Bus (required)
+#device		ukbd		# Keyboard
+#device		umass		# Disks/Mass storage - Requires scbus and da
+
+# Sound support
+nodevice		sound		# Generic sound driver (required)
+nodevice		snd_cmi		# CMedia CMI8338/CMI8738
+nodevice		snd_csa		# Crystal Semiconductor CS461x/428x
+nodevice		snd_emu10kx	# Creative SoundBlaster Live! and Audigy
+nodevice		snd_es137x	# Ensoniq AudioPCI ES137x
+nodevice		snd_hda		# Intel High Definition Audio
+nodevice		snd_ich		# Intel, NVidia and other ICH AC'97 Audio
+nodevice		snd_via8233	# VIA VT8233x Audio
+
+# MMC/SD
+nodevice		mmc		# MMC/SD bus
+nodevice		mmcsd		# MMC/SD memory card
+nodevice		sdhci		# Generic PCI SD Host Controller
+
+# VirtIO support
+nodevice		virtio		# Generic VirtIO bus (required)
+nodevice		virtio_pci	# VirtIO PCI device
+nodevice		vtnet		# VirtIO Ethernet device
+nodevice		virtio_blk	# VirtIO Block device
+nodevice		virtio_scsi	# VirtIO SCSI device
+nodevice		virtio_balloon	# VirtIO Memory Balloon device
+
+# HyperV drivers and enhancement support
+nodevice		hyperv			# HyperV drivers 
+
+# Xen HVM Guest Optimizations
+# NOTE: XENHVM depends on xenpci.  They must be added or removed together.
+nooptions 	XENHVM		# Xen HVM kernel infrastructure
+nodevice		xenpci		# Xen HVM Hypervisor services driver
+
+# VMware support
+nodevice		vmx		# VMware VMXNET3 Ethernet
+
+# Netmap provides direct access to TX/RX rings on supported NICs
+nodevice		netmap			# netmap(4) support
+
+# evdev interface
+nooptions 	EVDEV_SUPPORT		# evdev support in legacy drivers
+nodevice		evdev			# input event device support
+nodevice		uinput			# install /dev/uinput cdev
