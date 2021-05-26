@@ -1,5 +1,5 @@
 # FreeBSD Kernel Configs (For use on virtual machines)
-This repository contains preconfigured amd64 FreeBSD Kernel Configs, mainly for various virtual servers or cloud based systems.  These configs can be used as a base for your own custom kernels on actual hardware or in the cloud.  Currently, the configs are for FreeBSD version 12.0.
+This repository contains preconfigured amd64 FreeBSD Kernel Configs, mainly for various virtual servers or cloud based systems.  These configs can be used as a base for your own custom kernels on actual hardware or in the cloud.  Currently, the configs are for FreeBSD version 13.0.
 
 ## Why build your own kernel?
 Even though some of the functionality in the kernel of FreeBSD is contained in modules, building a custom kernel provides:
