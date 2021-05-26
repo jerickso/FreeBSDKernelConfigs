@@ -16,7 +16,7 @@
 # If you are in doubt as to the purpose or necessity of a line, check first
 # in NOTES.
 #
-# $FreeBSD: stable/12/sys/amd64/conf/GENERIC 340695 2018-11-20 19:37:09Z zeising $
+# $FreeBSD$
 
 include 	GENERIC
 #cpu		HAMMER # Included in Generic
@@ -43,13 +43,14 @@ nomakeoptions	WITH_CTF
 nooptions 	VIMAGE			# Subsystem virtualization, e.g. VNET
 #options 	INET			# InterNETworking
 #options 	INET6			# IPv6 communications protocols
-nooptions 	IPSEC			# IP (v4/v6) security
 nooptions 	IPSEC_SUPPORT		# Allow kldload of ipsec and tcpmd5
+nooptions	ROUTE_MPATH		# Multipath routing support
 #options 	TCP_OFFLOAD		# TCP offload
 nooptions 	TCP_BLACKBOX		# Enhanced TCP event logging
 nooptions 	TCP_HHOOK		# hhook(9) framework for TCP
 #options		TCP_RFC7413		# TCP Fast Open
-#options 	SCTP			# Stream Control Transmission Protocol
+nooptions 	SCTP_SUPPORT		# Allow kldload of SCTP
+nooptions		KERN_TLS		# TLS transmit & receive offload
 #options 	FFS			# Berkeley Fast Filesystem
 #options 	SOFTUPDATES		# Enable FFS soft updates support
 nooptions 	UFS_ACL			# Support for access control lists
@@ -65,6 +66,7 @@ nooptions 	NFS_ROOT		# NFS usable as /, requires NFSCL
 #options 	CD9660			# ISO 9660 Filesystem
 #options 	PROCFS			# Process filesystem (requires PSEUDOFS)
 #options 	PSEUDOFS		# Pseudo-filesystem framework
+#options 	TMPFS			# Efficient memory filesystem
 #options 	GEOM_RAID		# Soft RAID functionality.
 #options 	GEOM_LABEL		# Provides labelization
 nooptions 	EFIRT			# EFI Runtime Services support
@@ -75,8 +77,9 @@ nooptions 	COMPAT_FREEBSD6		# Compatible with FreeBSD6
 nooptions 	COMPAT_FREEBSD7		# Compatible with FreeBSD7
 nooptions 	COMPAT_FREEBSD9		# Compatible with FreeBSD9
 nooptions 	COMPAT_FREEBSD10	# Compatible with FreeBSD10
-#nooptions 	COMPAT_FREEBSD11	# Compatible with FreeBSD11
-nooptions 	SCSI_DELAY     		# Delay (in ms) before probing SCSI
+nooptions 	COMPAT_FREEBSD11	# Compatible with FreeBSD11
+#nooptions 	COMPAT_FREEBSD12	# Compatible with FreeBSD12
+#nooptions 	SCSI_DELAY=5000		# Delay (in ms) before probing SCSI
 #options 	KTRACE			# ktrace(1) support
 #options 	STACK			# stack(9) support
 #options 	SYSVSHM			# SYSV-style shared memory
@@ -102,11 +105,20 @@ nooptions 	RCTL			# Resource limits
 nooptions 	KDB			# Enable kernel debugger support.
 nooptions 	KDB_TRACE		# Print a stack trace for a panic.
 
+# Kernel Sanitizers
+#options 	COVERAGE		# Generic kernel coverage. Used by KCOV
+#options 	KCOV			# Kernel Coverage Sanitizer
+# Warning: KUBSAN can result in a kernel too large for loader to load
+#options 	KUBSAN			# Kernel Undefined Behavior Sanitizer
+#options 	KCSAN			# Kernel Concurrency Sanitizer
+
 # Kernel dump features.
 nooptions 	EKCD			# Support for encrypted kernel dumps
 options 	GZIO			# gzip-compressed kernel and user dumps
 options 	ZSTDIO			# zstd-compressed kernel and user dumps
+nooptions 	DEBUGNET		# debugnet networking
 options 	NETDUMP			# netdump(4) client support
+nooptions 	NETGDB			# netgdb(4) client support
 
 # Make an SMP-capable kernel by default
 #options 	SMP			# Symmetric MultiProcessor Kernel
@@ -117,10 +129,12 @@ options 	NETDUMP			# netdump(4) client support
 
 # Bus support.
 #device		acpi
-nooptions 	ACPI_DMAR
+nooptions 	IOMMU
 #device		pci
 nooptions 	PCI_HP			# PCI-Express native HotPlug
 nooptions		PCI_IOV			# PCI SR-IOV support
+
+nooptions 	COMPAT_LINUXKPI  # Mellonox driver requires this option
 
 # Floppy drives
 nodevice		fdc
@@ -133,11 +147,7 @@ nodevice		siis		# SiliconImage SiI3124/SiI3132/SiI3531 SATA
 
 # SCSI Controllers
 nodevice		ahc		# AHA2940 and onboard AIC7xxx devices
-nooptions 	AHC_REG_PRETTY_PRINT	# Print register bitfields in debug
-					# output.  Adds ~128k to driver.
 nodevice		ahd		# AHA39320/29320 and onboard AIC79xx devices
-nooptions 	AHD_REG_PRETTY_PRINT	# Print register bitfields in debug
-					# output.  Adds ~215k to driver.
 nodevice		esp		# AMD Am53C974 (Tekram DC-390(T))
 nodevice		hptiop		# Highpoint RocketRaid 3xxx series
 nodevice		isp		# Qlogic family
@@ -145,11 +155,10 @@ nodevice		ispfw		# Firmware for QLogic HBAs- normally a module
 nodevice		mpt		# LSI-Logic MPT-Fusion
 nodevice		mps		# LSI-Logic MPT-Fusion 2
 nodevice		mpr		# LSI-Logic MPT-Fusion 3
-#device		ncr		# NCR/Symbios Logic
-nodevice		sym		# NCR/Symbios Logic (newer chipsets + those of `ncr')
-nodevice		trm		# Tekram DC395U/UW/F DC315U adapters
+nodevice		sym			# NCR/Symbios Logic
 nodevice		isci		# Intel C600 SAS controller
 nodevice		ocs_fc			# Emulex FC adapters
+nodevice		pvscsi			# VMware PVSCSI
 
 # ATA/SCSI peripherals
 #device		scbus		# SCSI bus (required for ATA/SCSI)
@@ -165,11 +174,6 @@ nodevice		ctl		# CAM Target Layer
 nodevice		amr		# AMI MegaRAID
 nodevice		arcmsr		# Areca SATA II RAID
 nodevice		ciss		# Compaq Smart RAID 5*
-nodevice		dpt		# DPT Smartcache III, IV - See NOTES for options
-nodevice		hptmv		# Highpoint RocketRAID 182x
-nodevice		hptnr		# Highpoint DC7280, R750
-nodevice		hptrr		# Highpoint RocketRAID 17xx, 22xx, 23xx, 25xx
-nodevice		hpt27xx		# Highpoint RocketRAID 27xx
 nodevice		iir		# Intel Integrated RAID
 nodevice		ips		# IBM (Adaptec) ServeRAID
 nodevice		mly		# Mylex AcceleRAID/eXtremeRAID
@@ -194,6 +198,10 @@ nodevice		twe		# 3ware ATA RAID
 nodevice		nvme			# base NVMe driver
 nodevice		nvd			# expose NVMe namespaces as disks, depends on nvme
 
+# Intel Volume Management Device (VMD) support
+#device		vmd			# base VMD device
+#device		vmd_bus			# bus for VMD children
+
 # atkbdc0 controls both the keyboard and the PS/2 mouse
 #device		atkbdc		# AT keyboard controller
 #device		atkbd		# AT keyboard
@@ -214,6 +222,7 @@ nooptions 	SC_PIXEL_MODE	# add support for the raster text mode
 #device		vt
 #device		vt_vga
 nodevice		vt_efifb
+nodevice		vt_vbefb
 
 nodevice		agp		# support several AGP chipsets
 
@@ -235,18 +244,27 @@ nodevice		ppi		# Parallel port interface device
 
 nodevice		puc		# Multi I/O cards and multi-channel UARTs
 
-# PCI Ethernet NICs.
-nodevice		bxe		# Broadcom NetXtreme II BCM5771X/BCM578XX 10GbE
-nodevice		de		# DEC/Intel DC21x4x (``Tulip'')
+# PCI/PCI-X/PCIe Ethernet NICs that use iflib infrastructure
+#nodevice		iflib
 nodevice		em		# Intel PRO/1000 Gigabit Ethernet Family
 nodevice		ix			# Intel PRO/10GbE PCIE PF Ethernet
 nodevice		ixv			# Intel PRO/10GbE PCIE VF Ethernet
 nodevice		ixl			# Intel 700 Series Physical Function
 nodevice		iavf			# Intel Adaptive Virtual Function
+nodevice		ice			# Intel 800 Series Physical Function
+nodevice		vmx			# VMware VMXNET3 Ethernet
+nodevice		axp			# AMD EPYC integrated NIC
+
+# PCI Ethernet NICs.
+nodevice		bxe		# Broadcom NetXtreme II BCM5771X/BCM578XX 10GbE
 nodevice		le		# AMD Am7900 LANCE and Am79C9xx PCnet
 nodevice		ti		# Alteon Networks Tigon I/II gigabit Ethernet
-nodevice		txp		# 3Com 3cR990 (``Typhoon'')
-nodevice		vx		# 3Com 3c590, 3c595 (``Vortex'')
+
+# Nvidia/Mellanox Connect-X 4 and later, Ethernet only
+# mlx5ib requires ibcore infra and is not included by default
+nodevice		mlx5			# Base driver
+nodevice		mlxfw			# Firmware update
+nodevice		mlx5en			# Ethernet driver
 
 # PCI Ethernet NICs that use the common MII bus controller code.
 # NOTE: Be sure to keep the 'device miibus' line in order to use these NICs!
@@ -263,32 +281,25 @@ nodevice		dc		# DEC/Intel 21143 and various workalikes
 nodevice		et		# Agere ET1310 10/100/Gigabit Ethernet
 nodevice		fxp		# Intel EtherExpress PRO/100B (82557, 82558)
 nodevice		gem		# Sun GEM/Sun ERI/Apple GMAC
-nodevice		hme		# Sun HME (Happy Meal Ethernet)
 nodevice		jme		# JMicron JMC250 Gigabit/JMC260 Fast Ethernet
 nodevice		lge		# Level 1 LXT1001 gigabit Ethernet
 nodevice		msk		# Marvell/SysKonnect Yukon II Gigabit Ethernet
 nodevice		nfe		# nVidia nForce MCP on-board Ethernet
 nodevice		nge		# NatSemi DP83820 gigabit Ethernet
-nodevice		pcn		# AMD Am79C97x PCI 10/100 (precedence over 'le')
 nodevice		re		# RealTek 8139C+/8169/8169S/8110S
 nodevice		rl		# RealTek 8129/8139
-nodevice		sf		# Adaptec AIC-6915 (``Starfire'')
 nodevice		sge		# Silicon Integrated Systems SiS190/191
 nodevice		sis		# Silicon Integrated Systems SiS 900/SiS 7016
 nodevice		sk		# SysKonnect SK-984x & SK-982x gigabit Ethernet
 nodevice		ste		# Sundance ST201 (D-Link DFE-550TX)
 nodevice		stge		# Sundance/Tamarack TC9021 gigabit Ethernet
-nodevice		tl		# Texas Instruments ThunderLAN
-nodevice		tx		# SMC EtherPower II (83c170 ``EPIC'')
 nodevice		vge		# VIA VT612x gigabit Ethernet
 nodevice		vr		# VIA Rhine, Rhine II
-nodevice		wb		# Winbond W89C840F
 nodevice		xl		# 3Com 3c90x (``Boomerang'', ``Cyclone'')
 
 # Wireless NIC cards
 nodevice		wlan		# 802.11 support
 nooptions 	IEEE80211_DEBUG	# enable debug msgs
-nooptions 	IEEE80211_AMPDU_AGE # age frames in AMPDU reorder q's
 nooptions 	IEEE80211_SUPPORT_MESH	# enable 802.11s draft support
 nodevice		wlan_wep	# 802.11 WEP support
 nodevice		wlan_ccmp	# 802.11 CCMP support
@@ -298,7 +309,6 @@ nodevice		an		# Aironet 4500/4800 802.11 wireless NICs.
 nodevice		ath		# Atheros NICs
 nodevice		ath_pci		# Atheros pci/cardbus glue
 nodevice		ath_hal		# pci/cardbus chip support
-nooptions 	AH_SUPPORT_AR5416	# enable AR5416 tx/rx descriptors
 nooptions 	AH_AR5416_INTERRUPT_MITIGATION	# AR5416 interrupt mitigation
 nooptions 	ATH_ENABLE_11N	# Enable 802.11n support for AR5416 and later
 nodevice		ath_rate_sample	# SampleRate tx rate control for ath
@@ -310,21 +320,21 @@ nodevice		iwn		# Intel 4965/1000/5000/6000 wireless NICs.
 nodevice		malo		# Marvell Libertas wireless NICs.
 nodevice		mwl		# Marvell 88W8363 802.11n wireless NICs.
 nodevice		ral		# Ralink Technology RT2500 wireless NICs.
-nodevice		wi		# WaveLAN/Intersil/Symbol 802.11 wireless NICs.
 nodevice		wpi		# Intel 3945ABG wireless NICs.
 
 # Pseudo devices.
 device		crypto			# core crypto support
+device		aesni			# AES-NI OpenCrypto module
 #device		loop		# Network loopback
-#device		random		# Entropy device
 nodevice		padlock_rng	# VIA Padlock RNG
 nodevice		rdrand_rng	# Intel Bull Mountain RNG
 #device		ether		# Ethernet support
 nodevice		vlan		# 802.1Q VLAN support
-nodevice		tun		# Packet tunnel.
+nodevice		tuntap			# Packet tunnel.
 nodevice		md		# Memory "disks"
 nodevice		gif		# IPv6 and IPv4 tunneling
 #device		firmware	# firmware assist module
+nodevice		xz			# lzma decompression
 
 # The `bpf' device enables the Berkeley Packet Filter.
 # Be aware of the administrative consequences of enabling this!
@@ -355,6 +365,7 @@ nodevice		snd_via8233	# VIA VT8233x Audio
 nodevice		mmc		# MMC/SD bus
 nodevice		mmcsd		# MMC/SD memory card
 nodevice		sdhci		# Generic PCI SD Host Controller
+nodevice		rtsx			# Realtek SD card reader
 
 # VirtIO support
 nodevice		virtio		# Generic VirtIO bus (required)
@@ -372,9 +383,6 @@ nodevice		hyperv			# HyperV drivers
 nooptions 	XENHVM		# Xen HVM kernel infrastructure
 nodevice		xenpci		# Xen HVM Hypervisor services driver
 
-# VMware support
-nodevice		vmx		# VMware VMXNET3 Ethernet
-
 # Netmap provides direct access to TX/RX rings on supported NICs
 nodevice		netmap			# netmap(4) support
 
@@ -382,3 +390,8 @@ nodevice		netmap			# netmap(4) support
 nooptions 	EVDEV_SUPPORT		# evdev support in legacy drivers
 nodevice		evdev			# input event device support
 nodevice		uinput			# install /dev/uinput cdev
+
+# HID support
+nooptions 	HID_DEBUG		# enable debug msgs
+device		hid			# Generic HID support
+options 	IICHID_SAMPLING		# Workaround missing GPIO INTR support
