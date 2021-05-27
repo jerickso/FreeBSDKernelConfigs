@@ -8,7 +8,7 @@ Even though some of the functionality in the kernel of FreeBSD is contained in m
 * Lower storage requirements
 * Possibility of including drivers/functionality not included by the base kernel
 * Faster kernel build times if rebuilding from source
-* Slightly more secure as the attack surface is lowered because unused code is removed
+* Slightly more secure as the attack surface is smaller because unused code is removed
 
 ## Why would I NOT want to build my own kernel?
 * If you use `freebsd-update` to keep your system up to date, that utility will stop working if you have a custom kernel.
@@ -43,8 +43,8 @@ make buildkernel KERNCONF=VMWARE
 make installkernel KERNCONF=VMWARE
 ```
 
-# Building (Way 2)
-If you rebuild your kernel often, you can also place the KERNCONF assignment in `/etc/make.conf`:
+### Building (Way 2)
+If you rebuild your kernel often, it is simpler to place the KERNCONF assignment in `/etc/make.conf`:
 ```make
 KERNCONF=VMWARE
 ```
